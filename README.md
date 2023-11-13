@@ -1,13 +1,5 @@
 # Faceit-X-steam
 Chrome extension for popular completive gaming service "Faceit" to display a steam users Counter Strike 2 skill level on their steam profile when you open it 
-
-## API Key
-To obtain an API key for this to work you must apply for one at https://developers.faceit.com/. 
-```
-const API_KEY = ''; //Enter your faceit API key here
-    const headers = {
-        "Authorization": `Bearer ${API_KEY}`
-    }
 ```
 ## Installation
 ### 1. Download the zip file.
