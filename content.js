@@ -25,12 +25,15 @@ window.onload = () => {
 
                 const profile = data.faceit_url.replace('{lang}', 'en');
                 const faceitLevel = data.games.cs2.skill_level;
-                const targetElement = document.querySelector('.profile_header_summary');
-                const levelLogo = new Image();
+                const targetElement = document.querySelector('.persona_name.persona_level');
+                const levelLogo = new Image(height = 36, width = 36);
                 const link = document.createElement('a');
 
                 levelLogo.src = chrome.runtime.getURL(`images/faceit${faceitLevel}.svg`);
-                levelLogo.style = "margin-left: 5px; position: absolute; top: 13px; left: 750px; height: 36px; width: 36px;";
+                levelLogo.style = ```
+                    margin-left: 5px;
+                    vertical-align: middle;
+                ```;
 
                 link.href = `${ profile }`;
                 link.target = "_blank";
