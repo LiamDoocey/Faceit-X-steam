@@ -25,9 +25,14 @@ Then click **load unpacked** and select the Faceit X steam folder.
 
 The extension should now work as expected.
 
-## Preview
+## Preview - User Page
 
-![image](https://github.com/LiamDoocey/Faceit-X-steam/assets/74901944/bd07a4f6-84f0-419f-a74a-bdfdfe21362d)
+![image](https://github.com/user-attachments/assets/922c2b5a-0bef-4952-9640-e6a1157b2fcf)
+
+
+## Preview - Friends List
+
+![image](https://github.com/user-attachments/assets/f8c7e45f-92c3-43df-9bc3-1da8f6974a9f)
 
 
 
