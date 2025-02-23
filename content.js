@@ -4,6 +4,8 @@ window.onload = () => {
         "Authorization": `Bearer ${API_KEY}`
     }
 
+    let faceitProfile;
+
     const currentProfile = window.location.href + "?xml=1";
 
     if(window.location.href.includes("friends")){
@@ -52,14 +54,14 @@ window.onload = () => {
 
                 let targetElement;
 
-                const profile = data.faceit_url.replace('{lang}', 'en');
+                const faceitProfile = data.faceit_url.replace('{lang}', 'en');
                 const faceitLevel = data.games.cs2.skill_level;
                 const levelLogo = new Image(height = 36, width = 36);
                 const link = document.createElement('a');
 
                 levelLogo.src = chrome.runtime.getURL(`images/faceit${faceitLevel}.svg`);
                 
-                link.href = `${ profile }`;
+                link.href = `${ faceitProfile }`;
                 link.target = "_blank";
 
                 if(window.location.href.includes("friends")){
@@ -81,7 +83,18 @@ window.onload = () => {
 
                 link.appendChild(levelLogo);
                 targetElement.appendChild(link);
+
+                const supernavContainer = document.querySelector('.supernav_container');
+                if (supernavContainer) {
+                    const newMenuItem = document.createElement('a');
+                    newMenuItem.className = "menuitem";
+                    newMenuItem.href = `${ faceitProfile + "/stats/cs2" }`;
+                    newMenuItem.target = "_blank";
+                    newMenuItem.innerText = "Faceit Stats"
+                    supernavContainer.appendChild(newMenuItem);
+                }
         })
         .catch(err => console.log(err));
     }
+    
 }
