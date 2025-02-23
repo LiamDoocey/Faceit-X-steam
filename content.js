@@ -79,20 +79,21 @@ window.onload = () => {
                     levelLogo.style = `
                     margin-left: 5px;
                     vertical-align: middle;`;
+
+                    const supernavContainer = document.querySelector('.supernav_container');
+                    if (supernavContainer) {
+                        const newMenuItem = document.createElement('a');
+                        newMenuItem.className = "menuitem";
+                        newMenuItem.href = `${ faceitProfile + "/stats/cs2" }`;
+                        newMenuItem.target = "_blank";
+                        newMenuItem.innerText = "Faceit Stats"
+                        supernavContainer.appendChild(newMenuItem);
+                    }
+
                 }
 
                 link.appendChild(levelLogo);
                 targetElement.appendChild(link);
-
-                const supernavContainer = document.querySelector('.supernav_container');
-                if (supernavContainer) {
-                    const newMenuItem = document.createElement('a');
-                    newMenuItem.className = "menuitem";
-                    newMenuItem.href = `${ faceitProfile + "/stats/cs2" }`;
-                    newMenuItem.target = "_blank";
-                    newMenuItem.innerText = "Faceit Stats"
-                    supernavContainer.appendChild(newMenuItem);
-                }
         })
         .catch(err => console.log(err));
     }
