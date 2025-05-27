@@ -6,7 +6,8 @@
     "content_scripts": [
       {
         "matches": ["https://steamcommunity.com/id/*", "https://steamcommunity.com/profiles/*"],
-        "js": ["content.js"]
+        "js": ["content.js", "popup.js"],
+        "css": ["bars.css"]
       }
     ],
     "icons": {
@@ -26,7 +27,8 @@
                       "images/faceit7.svg",
                       "images/faceit8.svg",
                       "images/faceit9.svg",
-                      "images/faceit10.svg"
+                      "images/faceit10.svg",
+                      "images/leetify-logo-primary-white.svg"
                     ],
         "matches": ["<all_urls>"]
       }

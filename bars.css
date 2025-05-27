@@ -1,0 +1,55 @@
+.stat-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0; /* Increased vertical spacing */
+  font-size: 0.9rem;
+  color: white;
+}
+.stat-item span {
+  width: 80px;        
+  flex-shrink: 0;
+  text-align: left;
+}
+.stat-bar {
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;   
+  height: 12px;       
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: visible;
+  margin-left: 8px;
+  position: relative;
+}
+.stat-bar__fill {
+  width: 0%;
+  height: 100%;
+  transition: width 1.2s cubic-bezier(.4,2,.6,1);
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.stat-bar__value {
+  position: absolute;
+  top: -1.4em;           /* lift it above the bar */
+  left: var(--val, 100%);/* snap it to the fill % (needs inline --val on .stat-bar) */
+  transform: translateX(-50%); /* center over the fill edge */
+  color: rgb(226, 226, 226);
+  font-weight: bold;
+  font-size: 0.9em;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #222;
+  z-index: 2;
+}
+
+.faceit-hover-card .card__face--back ul {
+  margin: 8px 0 0 0;        
+  padding: 0 0 0 16px;      
+  list-style: none;         
+}
+
+.stat-bar__fill.green { background: #4caf50; }
+.stat-bar__fill.orange { background: #ff9800; }
+.stat-bar__fill.red { background: #f44336; }
