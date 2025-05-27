@@ -112,7 +112,7 @@ window.onload = () => {
                     }
                     showFaceitPopup(link, getCardHtml(
                         faceitData.games.cs2.faceit_elo ?? 0,
-                        leetifyData.rating.aim ?? 72,
+                        leetifyData.rating.aim ?? 0,
                         leetifyData.rating.utility ?? 0,
                         leetifyData.rating.positioning ?? 0
                     ), e.clientX, e.clientY);

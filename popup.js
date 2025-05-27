@@ -1,16 +1,28 @@
 function animateStats(root) {
   root.querySelectorAll('.stat-bar__fill').forEach(fill => {
-    fill.style.width = '0%'; 
+    fill.style.width = '0%';
     // Force reflow
     void fill.offsetWidth;
-    const val = fill.dataset.value;
+    const val = parseInt(fill.dataset.value, 10);
     if (!isNaN(val)) {
-      const pct = val + '%';
-      requestAnimationFrame(() => {
-        fill.style.width = pct;
-      });
+      let current = 0;
+      function step() {
+        if (current <= val) {
+          fill.style.width = current + '%';
+          // Dynamically set color
+          if (current > 75) fill.className = 'stat-bar__fill green';
+          else if (current > 50) fill.className = 'stat-bar__fill orange';
+          else fill.className = 'stat-bar__fill red';
+          current += 0.225; // speed of animation
+          requestAnimationFrame(step);
+        } else {
+          fill.style.width = val + '%';
+        }
+      }
+      requestAnimationFrame(step);
     } else {
       fill.style.width = '0%';
+      fill.className = 'stat-bar__fill red';
     }
   });
 }
