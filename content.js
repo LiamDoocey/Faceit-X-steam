@@ -114,7 +114,15 @@ window.onload = () => {
                         faceitData.games.cs2.faceit_elo ?? 0,
                         leetifyData.rating.aim ?? 0,
                         leetifyData.rating.utility ?? 0,
-                        leetifyData.rating.positioning ?? 0
+                        leetifyData.rating.positioning ?? 0,
+                        leetifyData.recent_matches.map(game => ({
+                            date: new Date(game.finished_at).toLocaleDateString(),
+                            map: game.map_name,
+                            result: game.outcome === 'win' ? 'win' : 'loss',
+                            score: game.score,
+                            room_id: game.id,
+                            source: game.data_source
+                        })).slice(0, 5)
                     ), e.clientX, e.clientY);
                     console.log(leetifyData.rating.aim, leetifyData.rating.utility, leetifyData.rating.positioning);
                 })

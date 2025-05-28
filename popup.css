@@ -1,0 +1,133 @@
+.stat-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0; /* Increased vertical spacing */
+  font-size: 0.9rem;
+  color: white;
+}
+.stat-item span {
+  width: 80px;        
+  flex-shrink: 0;
+  text-align: left;
+}
+.stat-bar {
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;   
+  height: 12px;       
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: visible;
+  margin-left: 8px;
+  position: relative;
+}
+.stat-bar__fill {
+  width: 0%;
+  height: 100%;
+  transition: width 1.2s cubic-bezier(.4,2,.6,1);
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.stat-bar__value {
+  position: absolute;
+  top: -1.4em;           /* lift it above the bar */
+  left: var(--val, 100%);/* snap it to the fill % (needs inline --val on .stat-bar) */
+  transform: translateX(-50%); /* center over the fill edge */
+  color: rgb(226, 226, 226);
+  font-weight: bold;
+  font-size: 0.9em;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #222;
+  z-index: 2;
+}
+
+.faceit-hover-card .card__face--back ul {
+  margin: 8px 0 0 0;        
+  padding: 0 0 0 16px;      
+  list-style: none;         
+}
+
+.faceit-hover-card ul {
+  margin: 0;
+  padding: 0 0 0 0;
+  list-style: none;
+  text-align: left;
+}
+
+.stat-bar__fill.green { background: #4caf50; }
+.stat-bar__fill.orange { background: #ff9800; }
+.stat-bar__fill.red { background: #f44336; }
+/* Add to your CSS file */
+.card.faceit-hover-card {
+  perspective: 800px;
+  cursor: pointer;
+}
+.card__inner {
+  position: relative;
+  width: 300px;
+  height: 160px;
+  transition: 
+    transform 0.6s cubic-bezier(.4,2,.6,1),
+    height 0.4s cubic-bezier(.4,2,.6,1);
+  transform-style: preserve-3d;
+  will-change: transform, height;
+}
+.card.flipped .card__inner {
+  transform: rotateY(180deg);
+  height: 230px;
+  width: 360px; /* or whatever height fits your table */
+}
+.card__face {
+  position: absolute;
+  width: 100%;
+  backface-visibility: hidden;
+  left: 0; top: 0;
+}
+.card__face--front {
+  z-index: 2;
+  background: transparent;
+}
+.card__face--back {
+  transform: rotateY(180deg);
+  background: transparent;
+}
+.last-five-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 0.95em;
+}
+.last-five-table th, .last-five-table td {
+  padding: 4px 8px;
+  text-align: left;
+}
+.last-five-table tr {
+  transition: background 0.15s;
+}
+.last-five-table tr.last-five-row:hover {
+  background: #232b36;
+  cursor: pointer;
+}
+.result-win {
+  color: #4caf50;
+  font-weight: bold;
+}
+.result-loss {
+  color: #f44336;
+  font-weight: bold;
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+.card.no-matches.shake .card__inner {
+  animation: shake 0.5s;
+}

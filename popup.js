@@ -45,30 +45,81 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
 
     animateStats(popup);
 
+    // Make last five rows clickable (example: alert or open a link)
+    popup.querySelectorAll('.last-five-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const roomId = row.getAttribute('data-room-id');
+            if (roomId) {
+                const gameUrl = `https://leetify.com/app/match-details/${roomId}/overview`;
+                window.open(gameUrl, '_blank');
+            }
+        });
+    });
+
+    const card = popup.querySelector('.card.faceit-hover-card');
+    if (card) {
+        card.addEventListener('click', function () {
+            if (card.classList.contains('no-matches')) {
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 500);
+            } else {
+                card.classList.toggle('flipped');
+            }
+        });
+    }
+
     function movePopup(ev) {
         popup.style.top = (ev.clientY + 10) + 'px';
         popup.style.left = (ev.clientX + 10) + 'px';
     }
     target.addEventListener('mousemove', movePopup);
+// Track if mouse is over target or popup
+    let overTarget = true;
+    let overPopup = false;
 
-    target.addEventListener('mouseleave', () => {
-        popup.remove();
-        target.removeEventListener('mousemove', movePopup);
-    });
+    function tryRemovePopup() {
+        if (!overTarget && !overPopup) {
+            popup.remove();
+            target.removeEventListener('mousemove', movePopup);
+            target.removeEventListener('mouseleave', onTargetLeave);
+            target.removeEventListener('mouseenter', onTargetEnter);
+            popup.removeEventListener('mouseenter', onPopupEnter);
+            popup.removeEventListener('mouseleave', onPopupLeave);
+        }
+    }
+
+    function onTargetEnter() {
+        overTarget = true;
+    }
+    function onTargetLeave() {
+        overTarget = false;
+        setTimeout(tryRemovePopup, 60); // slight delay for mouse to reach popup
+    }
+    function onPopupEnter() {
+        overPopup = true;
+    }
+    function onPopupLeave() {
+        overPopup = false;
+        setTimeout(tryRemovePopup, 10); // slight delay for mouse to leave popup
+    }
+
+    target.addEventListener('mouseenter', onTargetEnter);
+    target.addEventListener('mouseleave', onTargetLeave);
+    popup.addEventListener('mouseenter', onPopupEnter);
+    popup.addEventListener('mouseleave', onPopupLeave);
 }
 
 const leetifyLogo = chrome.runtime.getURL('images/leetify-logo-primary-white.svg');
 
 // popup.js
-function getCardHtml(elo, aim, util, pos) {
+function getCardHtml(elo, aim, util, pos, lastFive) {
     const display = v => (typeof v === 'number' && !isNaN(v) ? Math.round(v) : 0);
-    
+
     const statLine = (label, value) => {
       const val = display(value);
       let colorClass = 'red';
       if (val > 75) colorClass = 'green';
       else if (val > 50) colorClass = 'orange';
-      // Remove debug styles, keep only the class
       return `
       <li class="stat-item">
         <span>${label}</span>
@@ -79,20 +130,59 @@ function getCardHtml(elo, aim, util, pos) {
       </li>`;
     };
 
+    const noMatches = !lastFive || lastFive.length === 0;
+
     return `
-    <div class="card faceit-hover-card" id="myCard">
-      <div>
-        <div>
+    <div class="card faceit-hover-card${noMatches ? ' no-matches' : ''}" id="myCard">
+      <div class="card__inner">
+        <div class="card__face card__face--front">
           <img src="${leetifyLogo}" alt="Leetify" style="height: 15px; margin-right: 10px;">
-          <div class="card__content"></div>
-        </div>
-        <div class="card__face card__face--back" style="display: block;">
           <ul>
-            Faceit ELO: ${elo}
+            <li style="font-weight:bold; margin-bottom:4px;">Faceit ELO: ${elo}</li>
             ${statLine('Aim', aim)}
             ${statLine('Utility', util)}
             ${statLine('Positioning', pos)}
           </ul>
+          <div style="margin-top:8px;">${noMatches ? 'No recent matches found on Leetify' : 'Click to flip for more info'}</div>
+        </div>
+        <div class="card__face card__face--back">
+          <img src="${leetifyLogo}" alt="Leetify" style="height: 15px; margin-right: 10px;">
+          <div>
+            <strong>Last 5 games</strong>
+            ${
+              noMatches
+                ? '<div style="margin-top:12px;">No recent matches found.</div>'
+                : `<table class="last-five-table">
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Date</th>
+                        <th>Map</th>
+                        <th>Result</th>
+                        <th>Score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${lastFive.map((game, i) => {
+                        const resultClass = game.result === 'win' ? 'result-win' : 'result-loss';
+                        const resultText = game.result.charAt(0).toUpperCase() + game.result.slice(1);
+                        const sourceIcon = game.source === 'faceit'
+                          ? `<img src="${chrome.runtime.getURL('images/faceit.svg')}" alt="Faceit" style="height:18px;">`
+                          : `<img src="${chrome.runtime.getURL('images/Counter-Strike_2.svg')}" alt="CS2" style="height:18px;">`;
+                        return `
+                          <tr class="last-five-row" data-index="${i}" data-room-id="${game.room_id}" style="cursor:pointer;">
+                            <td>${sourceIcon}</td>
+                            <td>${game.date}</td>
+                            <td>${game.map}</td>
+                            <td><span class="${resultClass}">${resultText}</span></td>
+                            <td>${game.score[0] + ":" + game.score[1]}</td>
+                          </tr>
+                        `;
+                      }).join('')}
+                    </tbody>
+                  </table>`
+            }
+          </div>
         </div>
       </div>
     </div>
