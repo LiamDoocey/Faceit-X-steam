@@ -34,7 +34,6 @@ The extension should now work as expected.
 
 ![image](https://github.com/user-attachments/assets/f8c7e45f-92c3-43df-9bc3-1da8f6974a9f)
 
+## Preview - Leetify Stats / Popup
 
-
-
-
+![leetify_stat_showcase](https://github.com/user-attachments/assets/9519bf3a-5cff-4266-bb00-3ce544eb1b14)
