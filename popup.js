@@ -31,15 +31,17 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
     let popup = document.createElement('div');
     popup.className = 'faceit-popup';
     popup.innerHTML = content;
-    popup.style.position = 'fixed';
+    popup.style.position = 'absolute';
+    const scrollY = window.scrollY || document.documentElement.scrollTop;
+    const scrollX = window.scrollX || document.documentElement.scrollLeft;
+    popup.style.top = (mouseY + scrollY + 10) + 'px';
+    popup.style.left = (mouseX + scrollX + 10) + 'px';
     popup.style.background = '#171d25';
     popup.style.color = '#fff';
     popup.style.padding = '8px 12px';
     popup.style.borderRadius = '6px';
     popup.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
     popup.style.zIndex = 10000;
-    popup.style.top = (mouseY + 10) + 'px';
-    popup.style.left = (mouseX + 10) + 'px';
     popup.id = 'faceit-popup';
     document.body.appendChild(popup);
 
@@ -73,7 +75,23 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
         popup.style.left = (ev.clientX + 10) + 'px';
     }
     target.addEventListener('mousemove', movePopup);
-// Track if mouse is over target or popup
+
+    // Lock popup position on scroll when mouse is over the card
+    function lockPopupOnScroll() {
+        window.removeEventListener('scroll', movePopupOnScroll, true);
+    }
+    function unlockPopupOnScroll() {
+        window.addEventListener('scroll', movePopupOnScroll, true);
+    }
+    function movePopupOnScroll() {
+        // Only update if not hovering popup
+        if (!overPopup) {
+            // Optionally, you can update position here if you want it to follow scroll
+            // For now, do nothing to "lock" the popup
+        }
+    }
+
+    // Track if mouse is over target or popup
     let overTarget = true;
     let overPopup = false;
 
@@ -97,9 +115,11 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
     }
     function onPopupEnter() {
         overPopup = true;
+        lockPopupOnScroll();
     }
     function onPopupLeave() {
         overPopup = false;
+        unlockPopupOnScroll();
         setTimeout(tryRemovePopup, 10); // slight delay for mouse to leave popup
     }
 
@@ -107,6 +127,9 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
     target.addEventListener('mouseleave', onTargetLeave);
     popup.addEventListener('mouseenter', onPopupEnter);
     popup.addEventListener('mouseleave', onPopupLeave);
+
+    // Optionally, enable scroll lock initially
+    unlockPopupOnScroll();
 }
 
 const leetifyLogo = chrome.runtime.getURL('images/leetify-logo-primary-white.svg');
