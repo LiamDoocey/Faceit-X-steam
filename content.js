@@ -41,39 +41,24 @@ window.onload = () => {
         }
 
     function getLeetifyStats(ID) {
-        API = `https://api-public.cs-prod.leetify.com/v2/profiles/${ID}` 
-        fetch(API)
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 404) {
-                        console.log(`Leetify account not found for player ${ID}`);
-                    } else {
-                        throw new Error(`HTTP error! status: ${res.status}`);
-                    }
-                }
-                return res.json();
-            })
+        const API = `https://api-public.cs-prod.leetify.com/v2/profiles/${ID}`;
+        const cacheKey = `leetify-${ID}`;
+        return fetchWithCache(API, cacheKey, 10 * 60 * 1000) // 10 minutes cache
             .then(ld => {
                 leetifyData = ld;
                 console.log(ld);
-                return ID
+                return ID;
             })
-            .catch(err => console.log(err));
-            return ID
+            .catch(err => {
+                console.log(err);
+                return ID;
+            });
     }
 
-    function getFaceitData(ID){
-        fetch(`https://open.faceit.com/data/v4/players?game=cs2&game_player_id=${ID}`, { headers })
-            .then(res => {
-                if (!res.ok){
-                    if (res.status === 404){
-                        console.log(`Faceit account not found for player ${ID}`);
-                    } else {
-                        throw new Error(`HTTP error! status: ${res.status}`);
-                    }
-                }
-                return res.json();
-            })
+    function getFaceitData(ID) {
+        const url = `https://open.faceit.com/data/v4/players?game=cs2&game_player_id=${ID}`;
+        const cacheKey = `faceit-${ID}`;
+        return fetchWithCache(url, cacheKey, 10 * 60 * 1000, { headers })
             .then(faceitData => {
 
                 let targetElement;
@@ -153,4 +138,29 @@ window.onload = () => {
         .catch(err => console.log(err));
         return ID;
     }   
+
+    function fetchWithCache(url, cacheKey, cacheTimeMs = 5 * 60 * 1000, fetchOptions = {}) {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get([cacheKey], (result) => {
+                const cached = result[cacheKey];
+                const now = Date.now();
+                if (cached && (now - cached.timestamp < cacheTimeMs)) {
+                    console.log(`[CACHE] Using cached data for ${cacheKey}`);
+                    resolve(cached.data);
+                } else {
+                    fetch(url, fetchOptions)
+                        .then(res => {
+                            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                            return res.json();
+                        })
+                        .then(data => {
+                            chrome.storage.local.set({ [cacheKey]: { data, timestamp: now } });
+                            console.log(`[API] Fetched new data for ${cacheKey}`);
+                            resolve(data);
+                        })
+                        .catch(reject);
+                }
+            });
+        });
+    }
 }

@@ -84,10 +84,9 @@ function showFaceitPopup(target, content, mouseX, mouseY) {
         window.addEventListener('scroll', movePopupOnScroll, true);
     }
     function movePopupOnScroll() {
-        // Only update if not hovering popup
+        
         if (!overPopup) {
-            // Optionally, you can update position here if you want it to follow scroll
-            // For now, do nothing to "lock" the popup
+            
         }
     }
 
